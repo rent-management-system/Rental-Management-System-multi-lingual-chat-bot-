@@ -1,0 +1,17 @@
+🏡 FAQ – Frequently Asked Questions
+
+Q1: What property types can I list or search for?
+A: You can list or search for Apartments, Condominiums, and Private Houses. Each listing includes details like the number of bedrooms, bathrooms, area size, location, and photos. You can also filter by price, availability date, and amenities to easily find the right property.
+
+Q2: How does the pay-per-post model work for landlords?
+A: Landlords pay a one-time posting fee to publish a property listing—no ongoing subscription needed. Once the payment is confirmed, the listing goes live on the platform. This model helps reduce advertising costs and supports small and independent property owners.
+
+Q3: Are listings verified and how do you prevent scams?
+A: Yes, all listings go through a verification process before they’re published. We require valid identification, photos, and contact details. Users can also report suspicious listings, and our admin team promptly reviews and removes any fraudulent posts to keep the platform safe.
+
+Q4: What payment methods are supported for posting fees?
+A: We support local-friendly payment methods, including mobile money and local gateways, for posting fees. Currently, rent payments are handled outside the platform (via cash or bank transfer), but we plan to add full rent payment integration in future updates.
+
+Q5: How can I get help or report a problem?
+A: For assistance or to report issues, use the contact form available on our website or send an email to support@example.com
+. For urgent cases, you can also reach our local support team using the contact details on the About / Contact page.
