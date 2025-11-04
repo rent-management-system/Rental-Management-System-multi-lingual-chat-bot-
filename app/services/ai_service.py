@@ -1,5 +1,6 @@
 import google.generativeai as genai
 import os
+from typing import Dict, Any
 
 class AIService:
     def __init__(self):
