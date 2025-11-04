@@ -5,6 +5,7 @@ import os
 import logging
 import json
 from pathlib import Path
+from langchain_core.documents import Document
 from app.services.embedding_service import LocalEmbeddingService
 from app.services.knowledge_loader import KnowledgeLoader
 
@@ -34,7 +35,7 @@ class VectorDatabaseService:
             
             # Initialize FAISS index
             self.index = None
-            self.documents = []
+            self.documents: List[Document] = []
             self.initialized = False
             
             logger.info(f"VectorDatabaseService initialized with embedding dimension: {self.embedding_dim}")
@@ -76,21 +77,17 @@ class VectorDatabaseService:
             
             # Load documents
             logger.info("Loading documents...")
-            documents = await knowledge_loader.load_all_documents()
+            documents: List[Document] = await knowledge_loader.load_all_documents()
             if not documents:
                 logger.warning("No documents found in knowledge base")
                 self.initialized = True  # Mark as initialized even with no documents
                 return
                 
-            self.documents = [
-                {"text": doc, "metadata": {}}
-                if isinstance(doc, str) else doc
-                for doc in documents
-            ]
+            self.documents = documents
             
             # Generate embeddings in batches
-            logger.info(f"Generating embeddings for {len(documents)} documents...")
-            texts = [doc["text"] if isinstance(doc, dict) else doc for doc in documents]
+            logger.info(f"Generating embeddings for {len(self.documents)} documents...")
+            texts = [doc.page_content for doc in self.documents]
             embeddings = await self.embedding_service.embed_documents(texts)
             
             if not embeddings or len(embeddings) == 0:
@@ -111,7 +108,7 @@ class VectorDatabaseService:
             await self._save_index()
             
             self.initialized = True
-            logger.info(f"Knowledge base initialized with {len(documents)} documents")
+            logger.info(f"Knowledge base initialized with {len(self.documents)} documents")
             return True
             
         except Exception as e:
@@ -134,7 +131,9 @@ class VectorDatabaseService:
             self.index = faiss.read_index(str(INDEX_FILE))
             
             with open(METADATA_FILE, 'r', encoding='utf-8') as f:
-                self.documents = json.load(f)
+                # Load raw data and convert back to Document objects
+                loaded_data = json.load(f)
+                self.documents = [Document(page_content=d["page_content"], metadata=d["metadata"]) for d in loaded_data]
                 
             logger.info(f"Loaded {len(self.documents)} documents from existing index")
             return True
@@ -149,9 +148,9 @@ class VectorDatabaseService:
             if self.index is not None:
                 faiss.write_index(self.index, str(INDEX_FILE))
                 
-            # Save document metadata
+            # Save document metadata (convert Document objects to dicts)
             with open(METADATA_FILE, 'w', encoding='utf-8') as f:
-                json.dump(self.documents, f, ensure_ascii=False, indent=2)
+                json.dump([{"page_content": d.page_content, "metadata": d.metadata} for d in self.documents], f, ensure_ascii=False, indent=2)
                 
             logger.info(f"Saved vector index with {len(self.documents)} documents")
             
@@ -192,7 +191,8 @@ class VectorDatabaseService:
                 if distances[0][i] >= score_threshold:
                     doc_index = indices[0][i]
                     results.append({
-                        "document": self.documents[doc_index],
+                        "document": self.documents[doc_index].page_content,
+                        "metadata": self.documents[doc_index].metadata,
                         "score": distances[0][i]
                     })
             return results

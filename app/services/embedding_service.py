@@ -1,10 +1,12 @@
 from typing import List
 from sentence_transformers import SentenceTransformer
+import os
 
 class LocalEmbeddingService:
     def __init__(self):
-        # Use multi-lingual model for all languages
-        self.model = SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')
+        model_path = os.getenv("SENTENCE_TRANSFORMER_MODEL_PATH", 'paraphrase-multilingual-MiniLM-L12-v2')
+        # If model_path is a local directory, load from there. Otherwise, SentenceTransformer will download.
+        self.model = SentenceTransformer(model_path)
         self.embedding_dim = 384  # Dimension for chosen model
     
     async def embed_text(self, text: str) -> List[float]:
