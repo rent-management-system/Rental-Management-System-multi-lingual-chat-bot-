@@ -8,25 +8,15 @@ class VectorRetrieverNode:
         self.vector_service = VectorDatabaseService()
         self.translation_service = TranslationService()
     
-    async def retrieve_context(self, state: ChatState) -> ChatState:
-        """Enhanced context retrieval using vector similarity search"""
-        
-        # Prepare query for better retrieval
-        enhanced_query = self._enhance_query(state.user_message, state.current_language)
-        
-        # Perform vector similarity search
-        relevant_docs = await self.vector_service.similarity_search(
-            query=enhanced_query,
-            language=state.current_language,
-            k=5  # Top 5 most relevant documents
-        )
-        
-        # Combine and format context
-        state.context = self._format_context(relevant_docs, state.current_language)
-        state.metadata["retrieved_docs_count"] = len(relevant_docs)
-        state.metadata["retrieval_method"] = "vector_similarity"
-        
-        return state
+    async def retrieve_context(self, state: ChatState):
+        # Use language-specific embedding enhancement
+        enhanced_query = self._add_language_context(state.user_message, state.current_language)
+        return await self.vector_service.similarity_search(enhanced_query, state.current_language)
+
+    def _add_language_context(self, query: str, language: str) -> str:
+        # This is a placeholder for a more sophisticated language-specific query enhancement.
+        # For now, we just prepend the language to the query.
+        return f"{language}: {query}"
     
     def _enhance_query(self, query: str, language: str) -> str:
         """Enhance query with domain-specific terms"""

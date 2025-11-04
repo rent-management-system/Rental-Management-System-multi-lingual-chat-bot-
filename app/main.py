@@ -40,6 +40,7 @@ async def health_check():
     """
     return {"status": "ok"}
 
+<<<<<<< HEAD
 @app.post("/chat", status_code=status.HTTP_200_OK)
 async def chat_endpoint(request: ChatRequest):
     """
@@ -82,3 +83,12 @@ async def chat_endpoint(request: ChatRequest):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="An unexpected error occurred. Please try again."
         )
+=======
+@app.get("/knowledge/stats")
+async def knowledge_stats():
+    return {
+        "vector_docs": vector_service.get_document_count(),
+        "languages_supported": ["amharic", "english", "afan_oromo"],
+        "kb_initialized": vector_service.is_initialized()
+    }
+>>>>>>> 387ea7b (update the ai setup)
