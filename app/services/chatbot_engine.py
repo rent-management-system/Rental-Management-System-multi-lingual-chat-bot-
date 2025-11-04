@@ -20,6 +20,9 @@ class ChatbotEngine:
             self.session_service = SessionService()
             self.chat_workflow = ChatWorkflow(self.vector_service, self.ai_service)
             self.initialized = False
+            self.query_count = 0
+            self.error_count = 0
+            self.total_response_time = 0
             
             # System prompts for different languages
             self.system_prompts = {
