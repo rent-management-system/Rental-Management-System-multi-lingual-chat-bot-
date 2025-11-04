@@ -1,4 +1,5 @@
 import logging
+import time
 from typing import Optional, Dict, Any
 from app.services.vector_service import CachedVectorService
 from app.services.translation_service import TranslationService
@@ -66,6 +67,8 @@ class ChatbotEngine:
             Dict containing the response and metadata
         """
         try:
+            start_time = time.time()
+            self.query_count += 1
             # Validate input
             if not message or not message.strip():
                 raise ValueError("Empty message received")
@@ -101,6 +104,8 @@ class ChatbotEngine:
                 self.session_service.update_session(session_id, final_state.to_dict())
 
             # Return successful response
+            response_time = time.time() - start_time
+            self.total_response_time += response_time
             return {
                 "response": final_state.response,
                 "language": final_state.current_language,
@@ -109,6 +114,7 @@ class ChatbotEngine:
             }
                 
         except Exception as e:
+            self.error_count += 1
             logger.critical(f"Critical error in process_message: {str(e)}", exc_info=True)
             # Default error response
             return {
@@ -121,6 +127,19 @@ class ChatbotEngine:
                 "session_id": session_id,
                 "status": "error"
             }
+
+    def get_query_count(self) -> int:
+        return self.query_count
+
+    def get_error_rate(self) -> float:
+        if self.query_count == 0:
+            return 0.0
+        return self.error_count / self.query_count
+
+    def get_avg_response_time(self) -> float:
+        if self.query_count == 0:
+            return 0.0
+        return self.total_response_time / self.query_count
 
     def _detect_language(self, message: str) -> str:
         # This is a placeholder for a more sophisticated language detection mechanism.
