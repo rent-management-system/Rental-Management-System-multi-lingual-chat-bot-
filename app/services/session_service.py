@@ -4,6 +4,10 @@ class SessionService:
     def __init__(self):
         self.sessions: Dict[str, Dict[str, Any]] = {}
 
+    def get_active_count(self) -> int:
+        """Get the number of active sessions."""
+        return len(self.sessions)
+
     def get_session(self, session_id: str) -> Optional[Dict[str, Any]]:
         return self.sessions.get(session_id)
 

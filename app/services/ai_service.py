@@ -7,6 +7,11 @@ class AIService:
         genai.configure(api_key=self.api_key)
         self.model = genai.GenerativeModel('gemini-pro')
 
+    def get_status(self) -> Dict[str, Any]:
+        """Get the status of the AI service."""
+        # This is a placeholder. In a real application, you would check the health of the AI service.
+        return {"status": "healthy"}
+
     async def generate_response(self, prompt: str) -> str:
         try:
             response = self.model.generate_content(prompt)
