@@ -81,6 +81,7 @@ class ChatbotEngine:
             if language not in self.system_prompts:
                 logger.warning(f"Unsupported language: {language}, defaulting to English")
                 language = "english"
+            self.translation_service.record_language_usage(language)
             
             # Get system prompt for the specified language
             system_prompt = self.system_prompts[language]
