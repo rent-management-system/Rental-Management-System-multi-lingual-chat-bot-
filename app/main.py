@@ -64,63 +64,55 @@ if not os.getenv("GOOGLE_API_KEY"):
     raise ValueError("GOOGLE_API_KEY environment variable is not set")
 
 app = FastAPI(
-    title="Ethiopian Rental Management Chatbot",
-    description="Multilingual chatbot with vector DB and Gemini embeddings",
-    version="1.0.0"
+    title="Multilingual Chatbot API",
+    description="Backend for a multilingual chatbot using FastAPI, LangGraph, Gemini, and FAISS.",
+    version="1.0.0",
 )
 
-# Add security and performance middleware
-@app.middleware("http")
-async def security_headers(request: Request, call_next):
-    response = await call_next(request)
-    response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
-    response.headers["Content-Security-Policy"] = "default-src 'self'"
-    response.headers["X-Content-Type-Options"] = "nosniff"
-    response.headers["X-Frame-Options"] = "DENY"
-    return response
-
-app.add_middleware(GZipMiddleware, minimum_size=1000)
-
-# Add CORS middleware
+# Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # Allows all origins
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
 )
 
+<<<<<<< HEAD
 # Initialize services
 vector_service = VectorDatabaseService()
 knowledge_loader = KnowledgeLoader()
 ai_service = AIService()
 
+=======
+>>>>>>> d6a69be (update from scrach)
 @app.on_event("startup")
 async def startup_event():
-    if not vector_service.is_initialized():
-        await knowledge_loader.load_all_documents()
-        await vector_service.initialize_knowledge_base()
+    logger.info("Application startup: Initializing FAISS vector store (if not already).")
+    # Accessing faiss_vector_store instance triggers its lazy initialization
+    # This ensures the model is loaded and index built on startup,
+    # but only if the first request hasn't already done so.
+    _ = faiss_vector_store
+    if faiss_vector_store._index is None:
+        logger.error("FAISS vector store failed to initialize during startup.")
+    else:
+        logger.info("FAISS vector store ready.")
 
-app.include_router(router, prefix="/api")
-
-@app.get("/health")
+@app.get("/health", status_code=status.HTTP_200_OK)
 async def health_check():
-    return {
-        "status": "healthy",
-        "timestamp": datetime.utcnow().isoformat(),
-        "vector_db": vector_service.get_status(),
-        "ai_service": ai_service.get_status(),
-        "memory_usage": f"{psutil.Process().memory_info().rss / 1024 / 1024:.2f} MB"
-    }
+    """
+    Health check endpoint.
+    """
+    return {"status": "ok"}
 
-@app.get("/knowledge/stats")
-async def knowledge_stats():
-    return {
-        "vector_docs": vector_service.get_document_count(),
-        "languages_supported": ["amharic", "english", "afan_oromo"],
-        "kb_initialized": vector_service.is_initialized()
-    }
+@app.post("/chat", status_code=status.HTTP_200_OK)
+async def chat_endpoint(request: ChatRequest):
+    """
+    Processes a user query and returns a multilingual response from the chatbot.
+    """
+    logger.info(f"Received chat request: Query='{request.query}', Language='{request.language}'")
 
+<<<<<<< HEAD
 
 @app.get("/metrics")
 async def application_metrics():
@@ -131,3 +123,40 @@ async def application_metrics():
         "average_response_time": chat_engine.get_avg_response_time(),
         "error_rate": chat_engine.get_error_rate()
     }
+=======
+    if not faiss_vector_store._index:
+        logger.error("FAISS index not available. Returning 500 error.")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Chatbot service is not ready. Please try again later."
+        )
+
+    try:
+        # LangGraph expects a dictionary for initial state
+        initial_state = ChatbotState(query=request.query, language=request.language or "english")
+        
+        # Invoke the chatbot graph
+        # LangGraph's invoke method is synchronous by default,
+        # but FastAPI handles it in an async context.
+        result = chatbot_graph.invoke(initial_state)
+        
+        response_text = result.get("response", "Sorry, I couldn't generate a response.")
+        
+        if "Sorry, I encountered an issue" in response_text:
+            logger.error(f"LLM generation failed for query: '{request.query}'")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=response_text
+            )
+
+        logger.info(f"Chat response generated for query: '{request.query}'")
+        return {"response": response_text}
+    except HTTPException:
+        raise # Re-raise HTTPExceptions
+    except Exception as e:
+        logger.error(f"An unexpected error occurred during chat processing: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="An unexpected error occurred. Please try again."
+        )
+>>>>>>> d6a69be (update from scrach)
