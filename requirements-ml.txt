@@ -1,5 +1,5 @@
-# CPU-only heavy libs for embeddings and vector store
 sentence-transformers==2.7.0
 faiss-cpu
+torch
 transformers
-# don't pin torch here; Dockerfile installs CPU torch explicitly
+langgraph

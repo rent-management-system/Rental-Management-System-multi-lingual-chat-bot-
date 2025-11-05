@@ -1,5 +1,5 @@
 fastapi
-uvicorn[standard]
+uvicorn
 apscheduler
 pytz
 pydantic-settings
@@ -10,4 +10,3 @@ cffi
 passlib[bcrypt]==1.7.4
 langchain-google-genai>=2.0.0,<3.0.0
 langchain-text-splitters
-langgraph
