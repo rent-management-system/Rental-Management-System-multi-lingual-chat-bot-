@@ -253,7 +253,12 @@ class MultilingualEmbeddings:
             # This model is relatively small (approx 100MB)
             # Using a smaller model for memory optimization on Render's free tier.
             # 'paraphrase-multilingual-MiniLM-L6-v2' is a smaller alternative to 'L12-v2'.
-            cls._model = SentenceTransformer('sentence-transformers/paraphrase-multilingual-MiniLM-L6-v2')
+            token = os.getenv("HUGGINGFACEHUB_API_TOKEN", None)
+            cls._model = SentenceTransformer(
+                "sentence-transformers/paraphrase-multilingual-MiniLM-L6-v2",
+                device="cpu",
+                use_auth_token=token
+            )
         return cls._model
 
     def embed_documents(self, texts: List[str]) -> List[List[float]]:

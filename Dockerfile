@@ -20,6 +20,9 @@ RUN if [ -f "./requirements-ml.txt" ]; then \
       pip install --no-cache-dir -r requirements-ml.txt ; \
     fi
 
+# Pre-download SentenceTransformer model
+RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('sentence-transformers/paraphrase-multilingual-MiniLM-L6-v2', device='cpu')"
+
 # Copy project files
 COPY --chown=user:user . /app
 
