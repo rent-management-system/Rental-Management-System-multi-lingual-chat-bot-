@@ -154,3 +154,15 @@ Render will automatically build and deploy your application. The in-memory FAISS
 *   **Cold Starts:** The application might experience cold starts (a few seconds delay) due to the free tier's resource limitations and the need to rebuild the FAISS index.
 *   **No Persistence:** The FAISS index is in-memory, meaning it will be lost if the service restarts. This is acceptable for the free tier as it rebuilds quickly.
 *   **Resource Limits:** The free tier has 512MB RAM. The chosen embedding model and in-memory FAISS are designed to fit within this limit for the given knowledge base size.
+
+
+---
+title: Rent Management Chatbot
+emoji: 🤖
+colorFrom: pink
+colorTo: blue
+sdk: docker
+sdk_version: "0.0.1"
+app_file: app.main:app
+pinned: false
+---
