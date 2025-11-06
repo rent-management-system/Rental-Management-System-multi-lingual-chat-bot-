@@ -157,12 +157,13 @@ Render will automatically build and deploy your application. The in-memory FAISS
 
 
 ---
-title: Rent Management Chatbot
+title: Multilingual Chatbot
 emoji: 🤖
-colorFrom: pink
-colorTo: blue
+colorFrom: blue
+colorTo: green
 sdk: docker
-sdk_version: "0.0.1"
+sdk_version: "1.0"
 app_file: app.main:app
-pinned: false
+pinned: true
 ---
+
