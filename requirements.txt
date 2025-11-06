@@ -1,0 +1,14 @@
+fastapi
+uvicorn[standard]
+apscheduler
+pytz
+pydantic-settings
+asyncpg
+greenlet
+bcrypt==4.0.1
+cffi
+passlib[bcrypt]==1.7.4
+langchain-google-genai>=2.0.0,<3.0.0
+langchain-text-splitters
+langgraph
+# sentence-transformers/faiss/torch moved to requirements-ml.txt
