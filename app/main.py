@@ -79,6 +79,7 @@ app.add_middleware(
 )
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Initialize services
 vector_service = VectorDatabaseService()
 knowledge_loader = KnowledgeLoader()
@@ -98,11 +99,19 @@ async def startup_event():
     else:
         logger.info("FAISS vector store ready.")
 
+=======
+>>>>>>> ea2104f (Fix FAISS index initialization for Multilingual Chatbot)
 @app.get("/health", status_code=status.HTTP_200_OK)
 async def health_check():
     """
     Health check endpoint.
     """
+    # Check if the vector store is initialized as part of the health check
+    if faiss_vector_store.get_index() is None:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Chatbot service is not ready. FAISS index not initialized.",
+        )
     return {"status": "ok"}
 
 @app.post("/chat", status_code=status.HTTP_200_OK)
@@ -112,6 +121,7 @@ async def chat_endpoint(request: ChatRequest):
     """
     logger.info(f"Received chat request: Query='{request.query}', Language='{request.language}'")
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 @app.get("/metrics")
@@ -126,6 +136,11 @@ async def application_metrics():
 =======
     if not faiss_vector_store._index:
         logger.error("FAISS index not available. Returning 500 error.")
+=======
+    # The get_index() method will handle initialization if needed.
+    if faiss_vector_store.get_index() is None:
+        logger.error("FAISS index not available after attempting initialization. Returning 500 error.")
+>>>>>>> ea2104f (Fix FAISS index initialization for Multilingual Chatbot)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Chatbot service is not ready. Please try again later."
@@ -136,8 +151,6 @@ async def application_metrics():
         initial_state = ChatbotState(query=request.query, language=request.language or "english")
         
         # Invoke the chatbot graph
-        # LangGraph's invoke method is synchronous by default,
-        # but FastAPI handles it in an async context.
         result = chatbot_graph.invoke(initial_state)
         
         response_text = result.get("response", "Sorry, I couldn't generate a response.")
@@ -158,5 +171,9 @@ async def application_metrics():
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="An unexpected error occurred. Please try again."
+<<<<<<< HEAD
         )
 >>>>>>> d6a69be (update from scrach)
+=======
+        )
+>>>>>>> ea2104f (Fix FAISS index initialization for Multilingual Chatbot)

@@ -255,7 +255,7 @@ class MultilingualEmbeddings:
             # 'paraphrase-multilingual-MiniLM-L6-v2' is a smaller alternative to 'L12-v2'.
             token = os.getenv("HUGGINGFACEHUB_API_TOKEN", None)
             cls._model = SentenceTransformer(
-                "sentence-transformers/paraphrase-multilingual-MiniLM-L6-v2",
+                "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
                 device="cpu",
                 use_auth_token=token
             )
