@@ -78,15 +78,13 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 # Initialize services
 vector_service = VectorDatabaseService()
 knowledge_loader = KnowledgeLoader()
 ai_service = AIService()
 
-=======
->>>>>>> d6a69be (update from scrach)
+
 @app.on_event("startup")
 async def startup_event():
     logger.info("Application startup: Initializing FAISS vector store (if not already).")
@@ -99,8 +97,6 @@ async def startup_event():
     else:
         logger.info("FAISS vector store ready.")
 
-=======
->>>>>>> ea2104f (Fix FAISS index initialization for Multilingual Chatbot)
 @app.get("/health", status_code=status.HTTP_200_OK)
 async def health_check():
     """
@@ -121,8 +117,7 @@ async def chat_endpoint(request: ChatRequest):
     """
     logger.info(f"Received chat request: Query='{request.query}', Language='{request.language}'")
 
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 
 @app.get("/metrics")
 async def application_metrics():
@@ -133,14 +128,14 @@ async def application_metrics():
         "average_response_time": chat_engine.get_avg_response_time(),
         "error_rate": chat_engine.get_error_rate()
     }
-=======
+
     if not faiss_vector_store._index:
         logger.error("FAISS index not available. Returning 500 error.")
-=======
+
     # The get_index() method will handle initialization if needed.
     if faiss_vector_store.get_index() is None:
         logger.error("FAISS index not available after attempting initialization. Returning 500 error.")
->>>>>>> ea2104f (Fix FAISS index initialization for Multilingual Chatbot)
+
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Chatbot service is not ready. Please try again later."
@@ -171,9 +166,7 @@ async def application_metrics():
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="An unexpected error occurred. Please try again."
-<<<<<<< HEAD
         )
->>>>>>> d6a69be (update from scrach)
-=======
-        )
->>>>>>> ea2104f (Fix FAISS index initialization for Multilingual Chatbot)
+
+
+        
