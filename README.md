@@ -1,3 +1,15 @@
+---
+title: Multilingual Chatbot
+emoji: 💻
+colorFrom: blue
+colorTo: green
+sdk: docker
+sdk_version: '1.0'
+app_file: app.main:app
+pinned: true
+short_description: a multilingual chatbot backend using FastAPI, LangGraph
+---
+
 # Multilingual Chatbot Backend
 
 This project implements a multilingual chatbot backend using FastAPI, LangGraph, Google Gemini 2.0 Flash, and FAISS. It provides a REST API to answer user queries in English, Amharic, and Afaan Oromo, leveraging a knowledge base derived from various documents.
