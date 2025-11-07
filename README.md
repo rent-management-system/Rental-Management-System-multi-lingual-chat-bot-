@@ -156,14 +156,5 @@ Render will automatically build and deploy your application. The in-memory FAISS
 *   **Resource Limits:** The free tier has 512MB RAM. The chosen embedding model and in-memory FAISS are designed to fit within this limit for the given knowledge base size.
 
 
----
-title: Multilingual Chatbot
-emoji: 🤖
-colorFrom: blue
-colorTo: green
-sdk: docker
-sdk_version: "1.0"
-app_file: app.main:app
-pinned: true
----
+
 
